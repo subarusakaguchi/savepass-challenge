@@ -14,7 +14,7 @@ import {
   LoginList,
 } from './styles';
 
-interface LoginDataProps {
+export interface LoginDataProps {
   id: string;
   service_name: string;
   email: string;
@@ -30,15 +30,24 @@ export function Home() {
 
   async function loadData() {
     const dataKey = '@savepass:logins';
-    // Get asyncStorage data, use setSearchListData and setData
+    const response = await AsyncStorage.getItem(dataKey);
+    const logins = response ? JSON.parse(response) : []
+
+    if (logins.length > 0) {
+      setData(logins)
+      setSearchListData(logins)
+    }
   }
 
   function handleFilterLoginData() {
-    // Filter results inside data, save with setSearchListData
+    if (searchText !== '') {
+      const filteredData = data.filter(item => item.service_name.startsWith(searchText));
+      setSearchListData(filteredData)
+    }
   }
 
   function handleChangeInputText(text: string) {
-    // Update searchText value
+    setSearchText(text)
   }
 
   useFocusEffect(useCallback(() => {
